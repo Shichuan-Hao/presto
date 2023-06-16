@@ -30,6 +30,9 @@ import com.facebook.presto.GroupByHashPageIndexerFactory;
 import com.facebook.presto.PagesIndexPageSorter;
 import com.facebook.presto.SystemSessionProperties;
 import com.facebook.presto.block.BlockJsonSerde;
+import com.facebook.presto.catalog.CatalogResource;
+import com.facebook.presto.catalog.DynamicCatalogStore;
+import com.facebook.presto.catalog.DynamicCatalogStoreConfig;
 import com.facebook.presto.catalogserver.CatalogServerClient;
 import com.facebook.presto.catalogserver.RandomCatalogServerAddressSelector;
 import com.facebook.presto.catalogserver.RemoteMetadataManager;
@@ -100,8 +103,6 @@ import com.facebook.presto.metadata.MetadataManager;
 import com.facebook.presto.metadata.MetadataUpdates;
 import com.facebook.presto.metadata.SchemaPropertyManager;
 import com.facebook.presto.metadata.SessionPropertyManager;
-import com.facebook.presto.metadata.StaticCatalogStore;
-import com.facebook.presto.metadata.StaticCatalogStoreConfig;
 import com.facebook.presto.metadata.StaticFunctionNamespaceStore;
 import com.facebook.presto.metadata.StaticFunctionNamespaceStoreConfig;
 import com.facebook.presto.metadata.TablePropertyManager;
@@ -585,8 +586,11 @@ public class ServerMainModule
         binder.bind(PageSinkProvider.class).to(PageSinkManager.class).in(Scopes.SINGLETON);
 
         // metadata
-        binder.bind(StaticCatalogStore.class).in(Scopes.SINGLETON);
-        configBinder(binder).bindConfig(StaticCatalogStoreConfig.class);
+//        binder.bind(StaticCatalogStore.class).in(Scopes.SINGLETON);
+//        configBinder(binder).bindConfig(StaticCatalogStoreConfig.class);
+        binder.bind(DynamicCatalogStore.class).in(Scopes.SINGLETON);
+        configBinder(binder).bindConfig(DynamicCatalogStoreConfig.class);
+
         binder.bind(StaticFunctionNamespaceStore.class).in(Scopes.SINGLETON);
         configBinder(binder).bindConfig(StaticFunctionNamespaceStoreConfig.class);
         binder.bind(FunctionAndTypeManager.class).in(Scopes.SINGLETON);
@@ -696,6 +700,9 @@ public class ServerMainModule
         // node status resource
         jaxrsBinder(binder).bind(StatusResource.class);
         jsonCodecBinder(binder).bindJsonCodec(NodeStatus.class);
+
+        //catalog
+        jaxrsBinder(binder).bind(CatalogResource.class);
 
         // plugin manager
         binder.bind(PluginManager.class).in(Scopes.SINGLETON);
