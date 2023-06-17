@@ -31,6 +31,7 @@ import com.facebook.airlift.node.NodeModule;
 import com.facebook.airlift.tracetoken.TraceTokenModule;
 import com.facebook.drift.server.DriftServer;
 import com.facebook.drift.transport.netty.server.DriftNettyServerTransport;
+import com.facebook.presto.catalog.DynamicCatalogStore;
 import com.facebook.presto.dispatcher.QueryPrerequisitesManager;
 import com.facebook.presto.dispatcher.QueryPrerequisitesManagerModule;
 import com.facebook.presto.eventlistener.EventListenerManager;
@@ -40,7 +41,6 @@ import com.facebook.presto.execution.scheduler.NodeSchedulerConfig;
 import com.facebook.presto.execution.warnings.WarningCollectorModule;
 import com.facebook.presto.metadata.Catalog;
 import com.facebook.presto.metadata.CatalogManager;
-import com.facebook.presto.metadata.StaticCatalogStore;
 import com.facebook.presto.metadata.StaticFunctionNamespaceStore;
 import com.facebook.presto.security.AccessControlManager;
 import com.facebook.presto.security.AccessControlModule;
@@ -148,7 +148,8 @@ public class PrestoServer
             ServerConfig serverConfig = injector.getInstance(ServerConfig.class);
 
             if (!serverConfig.isResourceManager()) {
-                injector.getInstance(StaticCatalogStore.class).loadCatalogs();
+//                injector.getInstance(StaticCatalogStore.class).loadCatalogs();
+                injector.getInstance(DynamicCatalogStore.class).loadCatalogs();
             }
 
             // TODO: remove this huge hack
